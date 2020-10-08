@@ -35,6 +35,33 @@ namespace TechJobsConsole
                     values.Add(aValue);
                 }
             }
+            for(int k = 0; k < values.Count-1; k++)
+            {
+                int indexOfSmallest = -1;
+                for(int a = k+1; a < values.Count; a++)
+                {
+                    if(indexOfSmallest==-1)
+                    {
+                        if( string.Compare(values[a],values[k]) < 0 )
+                        {
+                            indexOfSmallest = a;
+                        }
+                    }
+                    else
+                    {
+                        if(string.Compare(values[a], values[indexOfSmallest]) < 0)
+                        {
+                            indexOfSmallest = a;
+                        }
+                    }
+                }
+                if(indexOfSmallest!=-1)
+                {
+                    string temp = values[k];
+                    values[k] = values[indexOfSmallest];
+                    values[indexOfSmallest] = temp;
+                }
+            }
             return values;
         }
 
@@ -47,9 +74,9 @@ namespace TechJobsConsole
 
             foreach (Dictionary<string, string> row in AllJobs)
             {
-                string aValue = row[column];
+                string aValue = row[column].ToLower();
 
-                if (aValue.Contains(value))
+                if (aValue.Contains(value.ToLower()))
                 {
                     jobs.Add(row);
                 }
@@ -137,6 +164,25 @@ namespace TechJobsConsole
             valueBuilder.Clear();
 
             return rowValues.ToArray();
+        }
+        public static List<Dictionary<string, string>> FindByValue(string searchString)
+        {
+            LoadData();
+
+            List<Dictionary<string, string>> jobs = new List<Dictionary<string, string>>();
+
+            foreach (Dictionary<string, string> row in AllJobs)
+            {
+                foreach(KeyValuePair<string,string> keyVal in row)
+                {
+                    if(keyVal.Value.ToLower().Contains(searchString.ToLower()) && !jobs.Contains(row))
+                    {
+                        jobs.Add(row);
+                    }
+                }
+            }
+
+            return jobs;
         }
     }
 }
